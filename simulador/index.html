@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FluxoWMS · Entrar</title>
+<link rel="icon" href="favicon.svg">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body class="tela-login">
+
+<header class="login-topo">
+  <a class="marca" href="index.html"><span id="logoTopo"></span>
+    <span><span class="marca-nome">Fluxo<b>WMS</b></span><br><span class="marca-sub">Gestão de Armazém · Ambiente de Demonstração</span></span></a>
+  <span class="espaco"></span>
+  <a class="entrar-link" href="#" data-entrar>Entrar</a>
+</header>
+
+<main class="login-palco">
+  <section class="login-heroi" id="heroi">
+    <span class="chip-demo">Ambiente de demonstração</span>
+    <h1>Seu armazém,<br><span>no fluxo certo.</span></h1>
+    <p>Pedidos, reabastecimento, WSaídas e picking lists em um só lugar.</p>
+    <a class="entrar-grande" href="#" data-entrar>Entrar no sistema</a>
+  </section>
+
+  <section class="login-cartao" id="cartaoLogin" hidden>
+    <h3>Bem-vindo de volta</h3>
+    <p>Qualquer usuário e senha funcionam nesta demonstração.</p>
+    <form id="formLogin" action="#" method="post" autocomplete="off">
+      <label class="campo"><span class="rotulo">Usuário</span>
+        <input type="text" name="data[Usuario][login]" id="UsuarioLogin" placeholder="seu.usuario"></label>
+      <label class="campo"><span class="rotulo">Senha</span>
+        <input type="password" name="data[Usuario][senha]" id="UsuarioSenha" placeholder="••••••••"></label>
+      <input type="submit" value="Login">
+    </form>
+  </section>
+</main>
+
+<script src="dados_demo.js"></script>
+<script src="estado.js"></script>
+<script src="app.js"></script>
+<script>
+  (function () {
+    Estado.carregar();
+    App.criarSobreposicoes();
+    document.getElementById("logoTopo").innerHTML = App.logo(40);
+
+    function mostrarLogin(ev) {
+      if (ev) ev.preventDefault();
+      document.getElementById("heroi").hidden = true;
+      document.getElementById("cartaoLogin").hidden = false;
+      setTimeout(function () { document.getElementById("UsuarioLogin").focus(); }, 50);
+    }
+    App.$$("[data-entrar]").forEach(function (a) { a.addEventListener("click", mostrarLogin); });
+
+    document.getElementById("formLogin").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      const usuario = document.getElementById("UsuarioLogin").value.trim() || "usuario_demo";
+      App.processar("Validando acesso…", function () {
+        const d = Estado.dados;
+        d.usuario = usuario;
+        Estado.salvar();
+        Estado.registrar("Login realizado · " + usuario, "info");
+        try { sessionStorage.setItem("fluxowms.menuAberto", "0"); } catch (e) { }
+        App.navegar("modulos.html", "Abrindo módulos…");
+      }, 500, 900);
+    });
+  })();
+</script>
+</body>
+</html>

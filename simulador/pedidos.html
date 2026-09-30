@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FluxoWMS · Pedidos de saída</title>
+<link rel="icon" href="favicon.svg">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<!--
+  ATENÇÃO: a ordem e a quantidade de <div> filhos diretos do <body> e a
+  estrutura interna desta página reproduzem os XPaths absolutos usados pelos
+  robôs (ex.: /html/body/div[4]/div[2]/div[3]/table/tbody/tr[4]/td[12]/div/span
+  e os diálogos /html/body/div[15], div[16], div[19]). Não reordene.
+-->
+<div class="topbar"></div>                                   <!-- body/div[1] -->
+<div id="menuOpendata" class="menu-lateral"></div>          <!-- body/div[2] -->
+<div class="menu-fundo"></div>                               <!-- body/div[3] -->
+<div class="app">                                            <!-- body/div[4] -->
+  <div class="subbar"></div>                                 <!-- div[4]/div[1] -->
+  <div class="conteudo">                                     <!-- div[4]/div[2] -->
+    <div></div>
+    <div></div>
+    <div class="pagina">                                     <!-- div[4]/div[2]/div[3] -->
+
+      <div class="titulo-pagina">                            <!-- pagina/div[1] -->
+        <h2 id="tituloPagina">Pedidos de saída</h2>
+        <p id="subtituloPagina">Crie, aprove, gere a WSaída e imprima a picking list.</p>
+      </div>
+
+      <div class="barra-acoes" id="barraCriar">              <!-- pagina/div[2] -->
+        <span class="dica" id="dicaTopo"></span>
+        <span class="espaco"></span>
+        <span class="criar-caixa">
+          <button type="button" id="dropdownCadastrarPedido" class="btn btn-pri btn-grande mais">Criar pedido</button>
+          <div id="accordion">
+            <div class="criar-wrap">
+              <div class="menu-criar">
+                <ul>
+                  <li><a data-tipo="normal">Normal<small>Saída padrão para um destinatário</small></a></li>
+                  <li><a data-tipo="urgente">Urgente<small>Atendimento no mesmo dia</small></a></li>
+                  <li><a data-tipo="transferencia">Transferência<small>Entre unidades da rede</small></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </span>
+      </div>
+
+      <div class="filtros">                                  <!-- pagina/div[3] -->
+        <div class="cartao" id="painelFiltro">               <!-- pagina/div[3]/div[1] -->
+          <div class="filtro-cab">
+            <h4><a id="lnkPesquisar">Pesquisar</a></h4>
+            <span class="espaco"></span>
+            <span class="dica" id="resumoFiltro"></span>
+            <button type="button" class="fechar-filtro" id="btnFecharFiltro" title="Recolher filtros" hidden>×</button>
+          </div>
+          <form id="formFiltro" action="#" autocomplete="off">
+            <div><input type="hidden" name="pagina" value="1"></div>
+            <div class="filtro-corpo" id="corpoFiltro" hidden>
+              <div>
+                <div class="dica" style="padding-top:12px">Combine quantos filtros quiser e clique em <b>Filtrar</b>.</div>
+                <div>
+                  <fieldset class="grade g3">
+                    <div class="campo"><label for="filtro_nnumero_ped">Número do pedido</label><div><div><input type="text" id="filtro_nnumero_ped" placeholder="Ex.: 104512"></div></div></div>
+                    <div class="campo"><label>Tipo</label><div><div><select id="filtro_tipo"><option value="">Todos</option><option>Normal</option><option>Urgente</option><option>Transferência</option></select></div></div></div>
+                    <div class="campo"><label>Status</label><div><div><select id="filtro_status"><option value="">Todos</option><option value="DIGITACAO">Em digitação</option><option value="APROVADO">Aprovado</option><option value="WSAIDA">WSaída criada</option><option value="SEPARACAO">Em separação</option><option value="EXPEDIDO">Expedido</option><option value="CANCELADO">Cancelado</option></select></div></div></div>
+                    <div class="campo"><label>Destinatário</label><div><div><input type="text" id="filtro_destinatario" placeholder="Nome ou parte"></div></div></div>
+                    <div class="campo"><label>Projeto</label><div><div><select id="filtro_projeto"><option value="">Todos</option></select></div></div></div>
+                    <div class="campo"><label>Separação a partir de</label><div><div><input type="text" id="filtro_data_ini" placeholder="DD/MM/AAAA"></div></div></div>
+                    <div class="campo"><label>Separação até</label><div><div><input type="text" id="filtro_data_fim" placeholder="DD/MM/AAAA"></div></div></div>
+                    <div class="campo"><label>Prioridade</label><div><div><select id="filtro_prioridade"><option value="">Todas</option><option>0</option><option>1</option><option>2</option><option>3</option></select></div></div></div>
+                    <div class="campo"><label for="filtro_mobs_ped">Observação contém</label><div><div><input type="text" id="filtro_mobs_ped" placeholder="Trecho da observação"></div></div></div>
+                  </fieldset>
+                  <fieldset hidden></fieldset>
+                  <fieldset hidden></fieldset>
+                  <fieldset hidden></fieldset>
+                  <fieldset>
+                    <div><div><div class="barra-acoes centro">
+                      <button type="button" class="btn btn-pri" id="btnFiltrar">Filtrar</button>
+                      <button type="button" class="btn" id="btnLimpar">Limpar filtros</button>
+                    </div></div></div>
+                  </fieldset>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="barra-acoes" id="barraVoltar" hidden>    <!-- pagina/div[3]/div[2] -->
+          <a class="btn voltar" id="btnVoltarWS">Voltar para a lista</a>
+          <span class="espaco"></span>
+          <span class="dica">Gerenciamento da WSaída</span>
+        </div>
+      </div>
+
+      <div id="areaWSaida" hidden>                            <!-- pagina/div[4] -->
+        <div id="conteudo_gerenciarwsaida" class="wsaida">
+          <div id="collapseHeader" class="cartao">
+            <div class="ws-cab">
+              <div class="ws-bloco num-ws"><div class="rot">WSaída nº</div><div><div class="val" id="wsNumero"></div></div></div>
+              <div class="ws-bloco"><div class="rot">Pedido</div><div><div class="val" id="wsPedido"></div></div></div>
+              <div class="ws-bloco"><div class="rot">Destinatário</div><div><div class="val" id="wsDestino" style="font-size:1rem"></div></div></div>
+              <div class="ws-bloco"><div class="rot">Itens</div><div><div class="val" id="wsItens"></div></div></div>
+            </div>
+          </div>
+          <div class="pedido-info" id="wsInfo"></div>
+          <div class="cartao">
+            <div class="cartao-cab">Itens reservados para separação <small id="wsEnderecos"></small></div>
+            <table class="tabela">
+              <thead><tr><th>Endereço</th><th>Código</th><th>Descrição</th><th class="dir">Solicitado</th><th class="dir">Disponível</th><th>Situação</th></tr></thead>
+              <tbody id="wsCorpo"></tbody>
+            </table>
+          </div>
+          <div class="acao-ws"><button type="button" id="criar_wsaida" class="btn btn-roxo btn-grande" disabled>Criar WSaída</button></div>
+          <div class="cartao ws-status">
+            <div>
+              <div id="wsAtendimento">Atendimento: —</div>
+              <div class="barra"><i id="wsBarra"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div></div>                                            <!-- pagina/div[5] -->
+
+      <table id="table_results" class="tabela cartao">        <!-- pagina/table -->
+        <thead>
+          <tr>
+            <th>Nº</th><th>Tipo</th><th>Separação</th><th>Destinatário</th><th class="col-proj">Projeto</th><th class="dir">Itens</th><th class="dir col-qtd">Qtd.</th>
+            <th>Prior.</th><th></th><th>Status</th><th class="col-obs">Observação</th><th>Ações</th><th>Impr.</th>
+          </tr>
+        </thead>
+        <tbody id="corpoTabela">
+          <tr class="resumo"><td colspan="13" id="resumoTabela">Carregando…</td></tr>
+          <tr class="resumo" id="linhaAtualizando" hidden><td colspan="13">Atualizando a lista…</td></tr>
+          <tr class="vazio" id="linhaVazia" hidden><td colspan="13">Nenhum pedido encontrado com esses filtros.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- body/div[5] a div[14]: posições reservadas (mantêm a numeração dos diálogos) -->
+<div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+<div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+
+<!-- body/div[15]: código de segurança para criar a WSaída -->
+<div class="ui-dialog" id="dlgCodigoWS" role="dialog">
+  <div class="ui-dialog-titlebar"><span class="ico">#</span>Confirmar criação da WSaída</div>
+  <div class="ui-dialog-content">
+    <p>Por segurança, digite o código abaixo para confirmar.</p>
+    <div class="codigo-seg"><label id="lbl_random"></label></div>
+    <form action="#" onsubmit="return false"><div><input type="text" id="txt_random" placeholder="Digite o código" autocomplete="off"></div></form>
+  </div>
+  <div class="ui-dialog-buttonpane"><div class="ui-dialog-buttonset"><button type="button" data-fechar>Cancelar</button><button type="button" class="btn-roxo" id="okCodigoWS"><span>OK</span></button></div></div>
+</div>
+
+<!-- body/div[16]: confirmação genérica -->
+<div class="ui-dialog" id="dlgConfirmar" role="dialog">
+  <div class="ui-dialog-titlebar"><span class="ico">?</span><span id="tituloConfirmar">Confirmação</span></div>
+  <div class="ui-dialog-content"><p id="msgConfirmar"></p></div>
+  <div class="ui-dialog-buttonpane"><div class="ui-dialog-buttonset"><button type="button" data-fechar>Cancelar</button><button type="button" class="btn-pri" id="okConfirmar"><span>OK</span></button></div></div>
+</div>
+
+<!-- body/div[17]: formato do relatório (picking list) -->
+<div class="ui-dialog" id="dlgRelatorio" role="dialog">
+  <div class="ui-dialog-titlebar"><span class="ico">⎙</span>Picking list total</div>
+  <div class="ui-dialog-content">
+    <p id="msgRelatorio">Escolha o formato do relatório.</p>
+    <div class="barra-acoes centro">
+      <button type="button" class="btn btn-pri btn-grande" id="PDF">PDF</button>
+      <button type="button" class="btn btn-grande" id="XLS">Excel</button>
+      <button type="button" class="btn btn-grande" id="HTML">Tela</button>
+    </div>
+  </div>
+  <div class="ui-dialog-buttonpane"><div class="ui-dialog-buttonset"><button type="button" data-fechar>Fechar</button></div></div>
+</div>
+
+<!-- body/div[18]: posição reservada -->
+<div class="slot"></div>
+
+<!-- body/div[19]: desaprovar pedido (justificativa) -->
+<div class="ui-dialog" id="dlgDesaprovar" role="dialog">
+  <div class="ui-dialog-titlebar"><span class="ico">↺</span>Desaprovar pedido</div>
+  <div class="ui-dialog-content">
+    <p id="msgDesaprovar">Informe a justificativa da desaprovação.</p>
+    <form action="#" onsubmit="return false"><input type="text" id="txtJustificativa" placeholder="Justificativa" autocomplete="off"></form>
+  </div>
+  <div class="ui-dialog-buttonpane"><div class="ui-dialog-buttonset"><button type="button" data-fechar>Cancelar</button><button type="button" class="btn-pri" id="okDesaprovar">OK</button></div></div>
+</div>
+
+<script src="dados_demo.js"></script>
+<script src="estado.js"></script>
+<script src="app.js"></script>
+<script src="painel_demo.js"></script>
+<script src="pagina_pedidos.js"></script>
+</body>
+</html>

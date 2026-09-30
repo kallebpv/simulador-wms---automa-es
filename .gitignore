@@ -1,0 +1,6 @@
+# Perfil do Chrome usado pelos robôs na demonstração
+automacoes/_perfil_chrome_demo/
+__pycache__/
+*.pyc
+# Logs gerados pelos robôs durante a execução
+automacoes/*/dados_exemplo/LOG_*.txt

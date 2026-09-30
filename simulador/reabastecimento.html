@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FluxoWMS · Pedidos de reabastecimento</title>
+<link rel="icon" href="favicon.svg">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<!--
+  Estrutura fixa usada pelos robôs: pagina/div[3]/div/div/div/div/a (Pesquisa),
+  pagina/div[3]/div/div/div/a[2] (Novo), o formulário de busca em
+  pagina/div[3]/div/div/form/... , a tabela em pagina/div[6]/div/table e o
+  diálogo de código em /html/body/div[16].
+-->
+<div class="topbar"></div>                                   <!-- body/div[1] -->
+<div id="menuOpendata" class="menu-lateral"></div>          <!-- body/div[2] -->
+<div class="menu-fundo"></div>                               <!-- body/div[3] -->
+<div class="app">                                            <!-- body/div[4] -->
+  <div class="subbar"></div>
+  <div class="conteudo">
+    <div></div>
+    <div></div>
+    <div class="pagina">                                     <!-- div[4]/div[2]/div[3] -->
+      <div class="titulo-pagina">                            <!-- pagina/div[1] -->
+        <h2>Pedidos de reabastecimento</h2>
+        <p>Importe os itens da planilha, aprove e integre com a saída.</p>
+      </div>
+
+      <div class="barra-acoes centro"><span class="dica" id="dicaTopo"></span></div>   <!-- pagina/div[2] -->
+
+      <div>                                                  <!-- pagina/div[3] -->
+        <div class="cartao" id="painelBusca">                <!-- A -->
+          <div>                                              <!-- B -->
+            <div class="filtro-cab">                         <!-- X -->
+              <div><a id="lnkPesquisa" class="btn lupa">Pesquisa</a></div>
+              <span class="espaco"></span>
+              <a class="btn" id="btnExportar">Exportar</a>
+              <a class="btn btn-pri mais" id="btnNovo">Novo</a>
+            </div>
+            <form id="formBusca" action="#" autocomplete="off">
+              <div><input type="hidden" name="pagina" value="1"></div>
+              <div class="filtro-corpo" id="corpoBusca" hidden>
+                <div>
+                  <div>
+                    <fieldset>
+                      <div class="grade g3">
+                        <div class="campo"><label>Status</label><select id="busca_status"><option value="">Todos</option><option value="RASCUNHO">Rascunho</option><option value="AGUARDANDO">Aguardando aprovação</option><option value="APROVADO">Aprovado</option><option value="INTEGRADO">Integrado</option></select></div>
+                        <div class="campo"><label for="busca_numero">Número do pedido</label><div><input type="text" id="busca_numero" placeholder="Ex.: 104522"></div></div>
+                        <div class="campo"><label>Data de criação (de / até)</label><div><div class="grade g2"><div><input type="text" id="busca_data_de" placeholder="DD/MM/AAAA"></div><div><input type="text" id="busca_data_ate" placeholder="DD/MM/AAAA"></div></div></div></div>
+                      </div>
+                      <div style="margin-top:16px"><div><div class="barra-acoes centro">
+                        <button type="button" class="btn" id="btnLimparBusca">Limpar</button>
+                        <button type="button" class="btn btn-pri" id="btnPesquisar">Pesquisar</button>
+                      </div></div></div>
+                    </fieldset>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div></div>                                            <!-- pagina/div[4] -->
+      <div></div>                                            <!-- pagina/div[5] -->
+
+      <div>                                                  <!-- pagina/div[6] -->
+        <div class="cartao">
+          <table class="tabela" id="tabelaReab">
+            <thead><tr><th>Nº</th><th>Criação</th><th>Origem</th><th>Destino</th><th>Projeto</th><th class="dir">Itens</th><th class="dir">Qtd.</th><th>Status</th><th>Pedido gerado</th><th>Observação</th><th>Ações</th></tr></thead>
+            <tbody id="corpoReab">
+              <tr class="resumo"><td colspan="11" id="resumoReab">Carregando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- body/div[5] a div[15]: reservados -->
+<div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+<div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+
+<!-- body/div[16]: código de aprovação -->
+<div class="ui-dialog" id="dlgCodigo" role="dialog">
+  <div class="ui-dialog-titlebar"><span class="ico">#</span><span id="tituloCodigo">Confirmação</span></div>
+  <div class="ui-dialog-content">
+    <p id="msgCodigo"></p>
+    <div class="codigo-seg"><label id="lbl_random"></label></div>
+    <form action="#" onsubmit="return false"><div><input type="text" id="txtCodigo" placeholder="Digite o código" autocomplete="off"></div></form>
+  </div>
+  <div class="ui-dialog-buttonpane"><div class="ui-dialog-buttonset"><button type="button" data-fechar>Cancelar</button><button type="button" class="btn-pri" id="okCodigo"><span>OK</span></button></div></div>
+</div>
+
+<script src="dados_demo.js"></script>
+<script src="estado.js"></script>
+<script src="app.js"></script>
+<script src="painel_demo.js"></script>
+<script src="pagina_reabastecimento.js"></script>
+</body>
+</html>

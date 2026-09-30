@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FluxoWMS · Módulos</title>
+<link rel="icon" href="favicon.svg">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="topbar"></div>
+<div id="menuOpendata" class="menu-lateral"></div>
+<div class="menu-fundo"></div>
+<div class="app">
+  <div class="subbar"></div>
+  <div class="conteudo">
+    <div></div>
+    <div></div>
+    <div class="pagina">
+      <div class="titulo-pagina">
+        <h2>Olá, <span id="nomeUsuario">usuário</span> 👋</h2>
+        <p>Escolha o módulo que deseja acessar.</p>
+      </div>
+      <div class="modulos">
+        <div class="link-modulo destaque" link="/Homes/index/wms">
+          <span class="ico">WMS</span>
+          <h3>WMS · Armazém</h3>
+          <p>Pedidos de saída, reabastecimento, WSaídas e separação.</p>
+        </div>
+        <div class="link-modulo bloqueado" link="/Homes/index/compras">
+          <span class="ico">CP</span>
+          <h3>Compras</h3>
+          <p>Cotações e ordens de compra.</p>
+        </div>
+        <div class="link-modulo bloqueado" link="/Homes/index/frota">
+          <span class="ico">FR</span>
+          <h3>Frota &amp; Rotas</h3>
+          <p>Roteirização e acompanhamento de entregas.</p>
+        </div>
+        <div class="link-modulo bloqueado" link="/Homes/index/financeiro">
+          <span class="ico">FI</span>
+          <h3>Financeiro</h3>
+          <p>Faturamento e conciliação.</p>
+        </div>
+        <div class="link-modulo bloqueado" link="/Homes/index/qualidade">
+          <span class="ico">QA</span>
+          <h3>Qualidade</h3>
+          <p>Não conformidades e auditorias.</p>
+        </div>
+        <div class="link-modulo bloqueado" link="/Homes/index/relatorios">
+          <span class="ico">BI</span>
+          <h3>Relatórios</h3>
+          <p>Indicadores e exportações.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="dados_demo.js"></script>
+<script src="estado.js"></script>
+<script src="app.js"></script>
+<script src="painel_demo.js"></script>
+<script>
+  App.iniciar({ atual: "", trilha: "<b>Módulos</b>" });
+  document.getElementById("nomeUsuario").textContent = Estado.dados.usuario || "usuário";
+  App.$$(".link-modulo").forEach(function (m) {
+    m.addEventListener("click", function () {
+      if (m.getAttribute("link").indexOf("/wms") >= 0) App.navegar("wms.html", "Abrindo o WMS…");
+      else App.toast("Módulo fora do roteiro da demonstração.", "aviso", 2200);
+    });
+  });
+</script>
+</body>
+</html>

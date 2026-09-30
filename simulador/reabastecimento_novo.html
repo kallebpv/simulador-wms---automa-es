@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FluxoWMS · Novo reabastecimento</title>
+<link rel="icon" href="favicon.svg">
+<link rel="stylesheet" href="estilo.css">
+<style>
+  #formReab { display: flex; flex-direction: column; gap: 18px; }
+  #formReab > div:nth-child(5) { order: 4; }
+  #formReab > div:nth-child(4) { order: 5; }
+</style>
+</head>
+<body>
+<!--
+  Estrutura fixa usada pelos robôs: título em pagina/div[1]/h2, selects em
+  pagina/div[4]/form/div[2]/div/div/div[2]/div/div[2|3]/div[1|2]/div/select,
+  botão em pagina/div[4]/form/div[5]/div/button, diálogo de importação em
+  /html/body/div[6] e confirmação em /html/body/div[15].
+-->
+<div class="topbar"></div>                                   <!-- body/div[1] -->
+<div id="menuOpendata" class="menu-lateral"></div>          <!-- body/div[2] -->
+<div class="menu-fundo"></div>                               <!-- body/div[3] -->
+<div class="app">                                            <!-- body/div[4] -->
+  <div class="subbar"></div>
+  <div class="conteudo">
+    <div></div>
+    <div></div>
+    <div class="pagina">                                     <!-- div[4]/div[2]/div[3] -->
+      <div class="titulo-pagina">                            <!-- pagina/div[1] -->
+        <h2 id="tituloReab">Reabastecimento · Pedido # </h2>
+        <p id="subtituloReab">Escolha unidades e projetos e importe os itens da planilha.</p>
+      </div>
+
+      <div class="barra-acoes">                              <!-- pagina/div[2] -->
+        <a class="btn voltar" id="btnVoltar" href="reabastecimento.html">Voltar</a>
+        <span class="espaco"></span>
+        <span class="dica">Novo pedido de reabastecimento</span>
+      </div>
+
+      <div></div>                                            <!-- pagina/div[3] -->
+
+      <div>                                                  <!-- pagina/div[4] -->
+        <form id="formReab" action="#" autocomplete="off">
+          <div><input type="hidden" id="numeroReab"></div>                               <!-- form/div[1] -->
+          <div class="cartao">                                                            <!-- form/div[2] -->
+            <div>
+              <div>
+                <div class="cartao-cab">Origem e destino</div>
+                <div class="cartao-corpo">
+                  <div class="grade">
+                    <div class="dica">Os itens saem da unidade de origem e abastecem a unidade de destino.</div>
+                    <div class="grade g2">
+                      <div class="campo"><label>Unidade de origem</label><div><select id="reab_origem"></select></div></div>
+                      <div class="campo"><label>Unidade de destino</label><div><select id="reab_destino"></select></div></div>
+                    </div>
+                    <div class="grade g2">
+                      <div class="campo"><label>Projeto de origem</label><div><select id="reab_proj_origem"></select></div></div>
+                      <div class="campo"><label>Projeto de destino</label><div><select id="reab_proj_destino"></select></div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cartao">                                                            <!-- form/div[3] -->
+            <div class="cartao-cab">Observação</div>
+            <div class="cartao-corpo"><textarea id="reab_obs" rows="2" placeholder="Opcional"></textarea></div>
+          </div>
+          <div class="cartao">                                                            <!-- form/div[4] -->
+            <div class="cartao-cab">Itens <small id="contagemItens"></small></div>
+            <div class="cartao-corpo" id="areaItens"></div>
+          </div>
+          <div>                                                                           <!-- form/div[5] -->
+            <div class="barra-acoes centro"><button type="button" class="btn btn-roxo btn-grande" id="btnImportarCSV">Importar CSV</button></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- body/div[5]: reservado -->
+<div class="slot"></div>
+
+<!-- body/div[6]: importar itens -->
+<div class="ui-dialog largo" id="dlgImportar" role="dialog">
+  <div class="ui-dialog-titlebar"><span class="ico">⇪</span>Importar itens</div>
+  <div class="ui-dialog-content">
+    <div>
+      <div>
+        <form action="#" onsubmit="return false">
+          <div><p>Cole uma linha por item: <b>código</b> ⭾ <b>quantidade</b>.</p></div>
+          <div><div><div><div><div><textarea id="itensReab" rows="10" placeholder="20114&#9;30"></textarea></div></div></div></div></div>
+        </form>
+        <p class="dica" id="previaImport"></p>
+      </div>
+    </div>
+  </div>
+  <div class="ui-dialog-buttonpane"><div class="ui-dialog-buttonset"><button type="button" class="btn-roxo" id="okImportar"><span>Importar</span></button><button type="button" data-fechar>Cancelar</button></div></div>
+</div>
+
+<!-- body/div[7] a div[14]: reservados -->
+<div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+<div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+
+<!-- body/div[15]: confirmação -->
+<div class="ui-dialog" id="dlgConfirmar" role="dialog">
+  <div class="ui-dialog-titlebar"><span class="ico">!</span>Atenção</div>
+  <div class="ui-dialog-content"><p>Ao importar os itens, <b>as unidades e os projetos não poderão mais ser modificados</b>. Deseja continuar?</p></div>
+  <div class="ui-dialog-buttonpane"><div class="ui-dialog-buttonset"><button type="button" data-fechar>Cancelar</button><button type="button" class="btn-pri" id="okConfirmar"><span>OK</span></button></div></div>
+</div>
+
+<script src="dados_demo.js"></script>
+<script src="estado.js"></script>
+<script src="app.js"></script>
+<script src="painel_demo.js"></script>
+<script src="pagina_reab_novo.js"></script>
+</body>
+</html>

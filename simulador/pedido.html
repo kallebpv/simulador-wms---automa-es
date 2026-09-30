@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FluxoWMS · Pedido Normal</title>
+<link rel="icon" href="favicon.svg">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<!--
+  Estrutura fixa: os robôs usam /html/body/div[6] (busca de destinatário),
+  /html/body/div[16] (confirmação), /html/body/div[24] (importar produtos) e
+  .../div[3]/div[4]/form/div[4]/div/div/div/div[3]/div[1]/div/button[3] (Salvar).
+-->
+<div class="topbar"></div>                                   <!-- body/div[1] -->
+<div id="menuOpendata" class="menu-lateral"></div>          <!-- body/div[2] -->
+<div class="menu-fundo"></div>                               <!-- body/div[3] -->
+<div class="app">                                            <!-- body/div[4] -->
+  <div class="subbar"></div>
+  <div class="conteudo">
+    <div></div>
+    <div></div>
+    <div class="pagina">                                     <!-- div[4]/div[2]/div[3] -->
+
+      <div class="titulo-pagina">                            <!-- pagina/div[1] -->
+        <h2 id="tituloPedido">Pedido Normal # <span id="badgePedido"></span></h2>
+        <p id="subtituloPedido">Preencha os dados e importe os produtos.</p>
+      </div>
+
+      <div class="barra-acoes">                              <!-- pagina/div[2] -->
+        <a class="btn voltar" id="btnVoltar" href="pedidos.html">Voltar</a>
+        <span class="espaco"></span>
+        <span class="dica" id="dicaModo"></span>
+      </div>
+
+      <div></div>                                            <!-- pagina/div[3] -->
+
+      <div>                                                  <!-- pagina/div[4] -->
+        <form id="formPedido" action="#" autocomplete="off">
+          <div><input type="hidden" id="numeroPedido" value=""></div>          <!-- form/div[1] -->
+
+          <div class="cartao">                                                  <!-- form/div[2] -->
+            <div class="cartao-cab">Dados do pedido <small>· saída</small></div>
+            <div id="collapseOne">
+              <div class="cartao-corpo grade">
+                <div class="grade g2">
+                  <div class="campo"><label for="id_tipo_movimento">Tipo de saída</label><select id="id_tipo_movimento"></select></div>
+                  <div class="campo"><label for="cod_wcliproj">Projeto</label><select id="cod_wcliproj"></select></div>
+                </div>
+                <div class="grade g2">
+                  <div class="campo"><label>Unidade de origem</label><select id="cod_origem" disabled><option>FLUXO CD MATRIZ</option></select></div>
+                  <div class="campo"><label>Modalidade</label><select disabled><option>Normal</option></select></div>
+                </div>
+                <div class="grade g2">
+                  <div class="campo"><label for="destinatarioNome">Destinatário</label>
+                    <div class="grupo-input"><input type="text" id="destinatarioNome" readonly placeholder="Clique na lupa para buscar"><span><button type="button" class="btn lupa" id="btnLupa" title="Buscar destinatário"></button></span></div>
+                  </div>
+                  <div class="campo"><label>Código / cidade</label><input type="text" id="destinatarioCodigo" readonly placeholder="—"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cartao">                                                  <!-- form/div[3] -->
+            <div class="cartao-cab">Prioridade, datas e observações</div>
+            <div class="cartao-corpo grade g3">
+              <div class="campo"><label for="nprioridade_ped">Prioridade <small class="dica">(0 = máxima)</small></label>
+                <select id="nprioridade_ped"><option>0</option><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+              <div class="campo"><label for="dtseparacao_ped">Data de separação</label><input type="text" id="dtseparacao_ped" placeholder="DD/MM/AAAA" maxlength="10"></div>
+              <div class="campo"><label>Criticidade</label><button type="button" id="bcritico_ped" class="alternador">Pedido crítico</button></div>
+              <div class="campo col-todo" id="campoUrgente" hidden><label for="stexto_urgente_ped">Motivo da criticidade</label><input type="text" id="stexto_urgente_ped" placeholder="Descreva o motivo"></div>
+              <div class="campo col-todo"><label for="mobs_ped">Observação</label><textarea id="mobs_ped" rows="3" placeholder="Informações para a separação e a entrega"></textarea></div>
+            </div>
+          </div>
+
+          <div>                                                                  <!-- form/div[4] -->
+            <div class="cartao">
+              <div class="cartao-corpo">
+                <div class="barra-acoes">
+                  <div class="dica" id="infoSalvo">Alterações ainda não salvas.</div>
+                  <div class="espaco"></div>
+                  <div>
+                    <div>
+                      <div class="barra-acoes">
+                        <button type="button" class="btn" id="btnCancelar">Descartar</button>
+                        <button type="button" class="btn" id="btnImprimir">Imprimir espelho</button>
+                        <button type="button" class="btn btn-pri" id="btnSalvar">Salvar pedido</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cartao">                                                  <!-- form/div[5] -->
+            <div class="cartao-cab">Itens do pedido <small id="contagemItens"></small><span style="flex:1"></span>
+              <button type="button" class="btn btn-roxo" id="importarProdutosCSV">Importar produtos (CSV)</button></div>
+            <div class="cartao-corpo" id="areaItens"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- body/div[5]: reservado -->
+<div class="slot"></div>
+
+<!-- body/div[6]: busca de destinatário -->
+<div class="ui-dialog largo" id="dlgDestinatario" role="dialog">
+  <div class="ui-dialog-titlebar"><span class="ico">⌕</span>Buscar destinatário</div>
+  <div class="ui-dialog-content">
+    <div>
+      <div>
+        <form action="#" id="formBuscaDest" onsubmit="return false">
+          <div class="dica" style="margin-bottom:10px">Digite o nome (ou parte) e clique em pesquisar.</div>
+          <div>
+            <div>
+              <div class="grupo-input" style="gap:10px">
+                <div style="flex:1"><input type="text" id="ncod_snome" placeholder="Nome do destinatário"></div>
+                <div><button type="button" class="btn btn-pri" id="btnBuscarDest">Pesquisar</button></div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="lista_itens_encontrados" style="margin-top:16px">
+      <div>
+        <table class="tabela">
+          <thead><tr><th>Código</th><th>Destinatário</th><th>Cidade</th><th></th></tr></thead>
+          <tbody id="resultadosDest"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="ui-dialog-buttonpane"><div class="ui-dialog-buttonset"><button type="button" data-fechar>Fechar</button></div></div>
+</div>
+
+<!-- body/div[7] a div[15]: reservados -->
+<div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+<div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+
+<!-- body/div[16]: confirmação -->
+<div class="ui-dialog" id="dlgConfirmar" role="dialog">
+  <div class="ui-dialog-titlebar"><span class="ico">!</span><span id="tituloConfirmar">Atenção</span></div>
+  <div class="ui-dialog-content"><p id="msgConfirmar"></p></div>
+  <div class="ui-dialog-buttonpane"><div class="ui-dialog-buttonset"><button type="button" data-fechar>Cancelar</button><button type="button" class="btn-pri" id="okConfirmar"><span>OK</span></button></div></div>
+</div>
+
+<!-- body/div[17] a div[23]: reservados -->
+<div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+<div class="slot"></div><div class="slot"></div>
+
+<!-- body/div[24]: importar produtos -->
+<div class="ui-dialog largo" id="dlgImportar" role="dialog">
+  <div class="ui-dialog-titlebar"><span class="ico">⇪</span>Importar produtos</div>
+  <div class="ui-dialog-content">
+    <p>Cole uma linha por produto no formato <b>código</b> ⭾ <b>quantidade</b> (como copiado da planilha).</p>
+    <textarea id="produtos" rows="9" placeholder="20114&#9;30&#10;21336&#9;2"></textarea>
+    <p class="dica" id="previaImport" style="margin-top:8px"></p>
+  </div>
+  <div class="ui-dialog-buttonpane"><div class="ui-dialog-buttonset"><button type="button" data-fechar>Cancelar</button><button type="button" class="btn-roxo" id="okImportar"><span>Importar</span></button></div></div>
+</div>
+
+<script src="dados_demo.js"></script>
+<script src="estado.js"></script>
+<script src="app.js"></script>
+<script src="painel_demo.js"></script>
+<script src="pagina_pedido.js"></script>
+</body>
+</html>

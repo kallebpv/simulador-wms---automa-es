@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FluxoWMS · Início</title>
+<link rel="icon" href="favicon.svg">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="topbar"></div>
+<div id="menuOpendata" class="menu-lateral"></div>
+<div class="menu-fundo"></div>
+<div class="app">
+  <div class="subbar"></div>
+  <div class="conteudo">
+    <div></div>
+    <div></div>
+    <div class="pagina">
+      <div class="titulo-pagina">
+        <h2>Painel do armazém</h2>
+        <p>Use o <b>Menu</b> para navegar: WMS › Saida › Pedidos.</p>
+      </div>
+      <div class="kpis">
+        <div class="cartao kpi"><small>Pedidos de saída</small><b id="kpiPedidos">0</b><span>no sistema</span></div>
+        <div class="cartao kpi"><small>Em digitação</small><b id="kpiDigitacao">0</b><span>prontos para avançar</span></div>
+        <div class="cartao kpi"><small>Em separação</small><b id="kpiSeparacao">0</b><span>com picking list</span></div>
+        <div class="cartao kpi"><small>Reabastecimentos</small><b id="kpiReabs">0</b><span>pedidos cadastrados</span></div>
+      </div>
+      <div class="atalhos">
+        <a class="cartao atalho" href="pedidos.html"><span class="ico">↗</span><span><h4>Pedidos de saída</h4><p>Criar, aprovar, gerar WSaída e imprimir picking list.</p></span></a>
+        <a class="cartao atalho" href="reabastecimento.html"><span class="ico">⟳</span><span><h4>Pedidos de reabastecimento</h4><p>Importar itens, aprovar e integrar com a saída.</p></span></a>
+      </div>
+      <div class="cartao">
+        <div class="cartao-cab">Pedidos prontos para avançar <small>· status “Em digitação”</small></div>
+        <div class="cartao-corpo"><div class="pilulas" id="prontos"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="dados_demo.js"></script>
+<script src="estado.js"></script>
+<script src="app.js"></script>
+<script src="painel_demo.js"></script>
+<script>
+  App.iniciar({ atual: "inicio", trilha: "WMS › <b>Início</b>" });
+  function desenhar() {
+    const ps = Estado.pedidos();
+    document.getElementById("kpiPedidos").textContent = ps.length;
+    document.getElementById("kpiDigitacao").textContent = ps.filter(function (p) { return p.status === "DIGITACAO"; }).length;
+    document.getElementById("kpiSeparacao").textContent = ps.filter(function (p) { return p.status === "SEPARACAO"; }).length;
+    document.getElementById("kpiReabs").textContent = Estado.reabs().length;
+    const prontos = ps.filter(function (p) { return p.status === "DIGITACAO"; }).sort(function (a, b) { return b.numero - a.numero; });
+    document.getElementById("prontos").innerHTML = prontos.length
+      ? prontos.slice(0, 24).map(function (p) { return '<span class="pilula">' + p.numero + "</span>"; }).join("")
+      : '<span class="dica">Nenhum pedido em digitação.</span>';
+  }
+  desenhar();
+  document.addEventListener("estado-mudou", desenhar);
+</script>
+</body>
+</html>
