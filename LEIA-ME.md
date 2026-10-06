@@ -1,6 +1,10 @@
 # FluxoWMS · Simulador para gravar os robôs
 
-Um "WMS de mentira" que roda no seu computador, sem internet, com as mesmas telas e botões que os seus robôs usam — e os próprios robôs, adaptados para rodar nele com dados 100% fictícios.
+Um "WMS de mentira" que roda no seu computador, sem internet, com as mesmas telas e botões que os robôs usam — e os próprios robôs, adaptados para rodar nele com dados 100% fictícios.
+
+# Atenção
+
+Este projeto é baseado em automações originais minhas, que foram desenvolvidas 80% de forma manual, para uso real em áreas da logistica. Agora, com o objetivo de refaze-las para o meu portfólio, e demonstrar o avanço e a aplicação prática das ferramentas de IA, refiz esses processos com o auxílio de IA para compor o meu portfólio.
 
 ## Como rodar (8 passos)
 
