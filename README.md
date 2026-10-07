@@ -2,7 +2,9 @@
 
 Três automações (RPA) que desenvolvi para uma operação real de logística de saúde, recriadas para portfólio dentro de um WMS de demonstração que roda no navegador, com dados 100% fictícios.
 
-<!-- Coloque aqui um GIF do robô trabalhando: ![Robô criando pedidos no FluxoWMS](docs/demo.gif) -->
+![Robô criando pedidos no FluxoWMS: login, preenchimento do pedido, busca do destinatário e o painel contando os pedidos criados](docs/demo.gif)
+
+*O robô de pedidos rodando no simulador (vídeo acelerado 3,5×).*
 
 ## A história
 
