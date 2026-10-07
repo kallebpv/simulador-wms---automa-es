@@ -1,43 +1,85 @@
-# FluxoWMS · Simulador para gravar os robôs
+# FluxoWMS · Robôs de logística em Python rodando num WMS simulado
 
-Um "WMS de mentira" que roda no seu computador, sem internet, com as mesmas telas e botões que os robôs usam — e os próprios robôs, adaptados para rodar nele com dados 100% fictícios.
+Três automações (RPA) que desenvolvi para uma operação real de logística de saúde, recriadas para portfólio dentro de um WMS de demonstração que roda no navegador, com dados 100% fictícios.
 
-# Atenção
+<!-- Coloque aqui um GIF do robô trabalhando: ![Robô criando pedidos no FluxoWMS](docs/demo.gif) -->
 
-Este projeto é baseado em automações originais minhas, que foram desenvolvidas 80% de forma manual, para uso real em áreas da logistica. Agora, com o objetivo de refaze-las para o meu portfólio, e demonstrar o avanço e a aplicação prática das ferramentas de IA, refiz esses processos com o auxílio de IA para compor o meu portfólio.
+## A história
 
-## Como rodar (8 passos)
+Criei essas automações em Python e Selenium para o dia a dia de uma operação de logística de saúde. Elas rodam em produção e operam o sistema de gestão de armazém (WMS) da empresa, substituindo trabalho manual repetitivo.
 
-1. **Ligue o simulador**: abra a pasta `simulador` e dê dois cliques em **`iniciar_simulador.bat`**. Vai abrir uma janela preta (é o servidor, deixe aberta) e o FluxoWMS no navegador. Para desligar, feche a janela preta.
-2. (Opcional) Faça um teste manual no navegador: entre com qualquer usuário e senha e passeie pelo **Menu → WMS → Saida → Pedidos**.
-3. **Robô que cria pedidos**: abra `automacoes\robo_cria_pedidos` e dê dois cliques em **`rodar.bat`**. Na primeira vez ele instala o que falta (pode demorar um pouco). A sua tela Tkinter abre já preenchida → clique em **Iniciar Automação**.
-4. Assista: o Chrome abre maximizado, faz login e cria um pedido por paciente da planilha. O **painel no canto direito** e a **pílula no topo** mostram o contador, o cronômetro e o log subindo.
-5. **Robô de reabastecimento**: `automacoes\robo_reabastecimento\rodar.bat` → **Iniciar Automação**. Ele cria um reabastecimento por tipo (5 no total), aprova, integra e ajusta o pedido de saída gerado.
-6. **Avançador de pedidos**: `automacoes\avancador_de_pedidos\rodar.bat` → **Iniciar Automação**. Quando ele pedir o número, digite um pedido **"Em digitação"** (a tela inicial do WMS mostra a lista; ex.: `104519`, ou um que o robô de pedidos acabou de criar, como `104520`). Ele aprova, cria a WSaída, inicia a separação e baixa a picking list em PDF na sua pasta Downloads.
-7. **Planilhas novas**: dentro de `automacoes`, rode `python gerar_dados_exemplo.py --pacientes 120` (de 1 a 200 pacientes). Ele gera planilhas novas e bagunçadas, iguais às reais, em `dados_exemplo`.
-8. **Recomeçar do zero**: no painel da demonstração, clique em **Reiniciar demonstração** (duas vezes, para confirmar). Pedidos e contadores voltam ao início.
+Escrevi as versões originais praticamente à mão, antes de usar IA no desenvolvimento. Como não posso mostrar o sistema real nem os dados da operação, reconstruí o cenário com a ajuda de IA: um WMS de demonstração com as mesmas telas e o mesmo fluxo que os robôs percorrem, e as automações adaptadas para rodar nele.
 
-## Dicas para a gravação
+A lógica dos robôs é a mesma da produção. As poucas mudanças feitas para o simulador estão marcadas no código com `# [SIMULADOR]`.
 
-- **Velocidade**: em cada `rodar.bat`, mude `VELOCIDADE_DEMO` (1 = ritmo original; 2 = duas vezes mais rápido; 0.5 = mais devagar) e `PAUSA_EXTRA_DEMO` (segundos a mais em cada passo).
-- **Teclas no navegador**: **P** esconde/mostra o painel e **H** esconde/mostra a pílula do topo (para tomadas "limpas").
-- **Vídeo vertical (9:16)**: títulos, diálogos, avisos e a pílula ficam no centro da tela.
-- **Impressão**: o avançador só *simula* a impressão. Para imprimir de verdade, troque `IMPRIMIR_DE_VERDADE = False` por `True` no topo de `avancar_pedido.py`. Para o PDF abrir na tela, use `ABRIR_PDF_NA_DEMO = True`.
-- Não rode dois robôs ao mesmo tempo (eles usam o mesmo perfil do Chrome, em `automacoes\_perfil_chrome_demo`).
+## Resultados na operação real
 
-## Se algo der errado
+| Automação | Antes | Com o robô |
+|---|---|---|
+| Criação de pedidos a partir de planilha | 2 pessoas, cerca de 4 horas por dia | cerca de 200 pedidos por dia criados automaticamente |
+| Pedidos de reabastecimento | cerca de 25 minutos no fim do expediente | cerca de 13 minutos |
+| Avanço de pedidos | cada etapa feita manualmente no sistema | aprovação, WSaída, separação e picking list em um único fluxo |
 
-- **"O simulador FluxoWMS não está ligado"** → faça o passo 1 primeiro.
-- **Erro do ChromeDriver** → na primeira execução o Selenium baixa o driver compatível sozinho (precisa de internet só dessa vez). Se preferir, coloque um `chromedriver.exe` da mesma versão do seu Chrome dentro da pasta do robô.
-- **Porta 8080 ocupada** → feche o outro programa que usa a porta ou troque `8080` no `iniciar_simulador.bat` e em `URL_SIMULADOR` nos robôs.
+## Os robôs
 
-## O que tem em cada arquivo
+**Robô que cria pedidos** (`automacoes/robo_cria_pedidos`)
+Lê um relatório de entregas desorganizado (sem cabeçalho, com um bloco por paciente), extrai produtos e quantidades e cria um pedido por paciente no WMS: preenche destinatário, prioridade, datas e observação e importa os itens em lote.
 
-| Arquivo | Para que serve |
-|---|---|
-| `DECISOES.md` | Tudo o que foi decidido sem perguntar (e onde mudar) |
-| `01_INVENTARIO.md` | Quais automações entraram e por quê |
-| `02_MAPA_DE_ROTAS.md` | Fluxogramas e todos os botões/campos que os robôs usam |
-| `03_TESTES.md` | Resultado dos testes de cada robô |
-| `simulador/` | O FluxoWMS (HTML, CSS e JavaScript puros) |
-| `automacoes/` | Os seus robôs adaptados (mudanças marcadas com `# [SIMULADOR]`) |
+**Robô de reabastecimento** (`automacoes/robo_reabastecimento`)
+Lê a planilha de saída programada, agrupa os itens por tipo e cria os pedidos de reabastecimento. Em seguida passa cada pedido por aprovação e integração e ajusta o pedido de saída gerado.
+
+**Avançador de pedidos** (`automacoes/avancador_de_pedidos`)
+A partir do número de um pedido, solicita aprovação, cria a WSaída, inicia a separação e baixa a picking list em PDF.
+
+Os três têm interface desktop em Tkinter, para quem opera não precisar abrir código.
+
+## O simulador
+
+- HTML, CSS e JavaScript puros, sem framework e sem banco de dados. O estado fica em memória.
+- Reproduz a estrutura de páginas do sistema original a ponto de os localizadores dos robôs, inclusive XPaths absolutos, funcionarem sem alteração. Os detalhes estão em [`docs/COMO_FUNCIONA.md`](docs/COMO_FUNCIONA.md).
+- Tempos de processamento e telas de carregamento simulados, para o fluxo se comportar como um sistema real.
+- Painel de demonstração com contador de pedidos, cronômetro e log das ações em tempo real.
+
+## Tecnologias
+
+Python · Selenium · pandas · openpyxl · Tkinter · HTML · CSS · JavaScript
+
+## Como rodar
+
+Requisitos: Windows, Python 3 e Google Chrome.
+
+1. Abra `simulador/iniciar_simulador.bat`. O FluxoWMS abre em `http://localhost:8080` (qualquer usuário e senha entram).
+2. Abra o `rodar.bat` da automação desejada, dentro de `automacoes/`. Na primeira execução ele instala as dependências.
+3. Na janela do robô, clique em **Iniciar Automação** e acompanhe pelo navegador.
+
+Para gerar novas planilhas de exemplo:
+
+```bash
+python automacoes/gerar_dados_exemplo.py --pacientes 120
+```
+
+A velocidade dos robôs é ajustada pela variável `VELOCIDADE_DEMO` em cada `rodar.bat`.
+
+## Estrutura
+
+```
+├── simulador/                  WMS de demonstração (HTML, CSS, JS)
+├── automacoes/
+│   ├── robo_cria_pedidos/
+│   ├── robo_reabastecimento/
+│   ├── avancador_de_pedidos/
+│   ├── gerar_dados_exemplo.py  gerador de planilhas fictícias
+│   └── requirements.txt
+└── docs/
+    └── COMO_FUNCIONA.md        fluxos dos robôs e decisões técnicas
+```
+
+## Sobre os dados
+
+Todos os nomes, produtos, pacientes, unidades e números deste repositório são fictícios. Nenhum dado, credencial ou endereço do sistema real foi incluído.
+
+## Autor
+
+**Kalleb Vieira**: automação de processos com Python e IA para logística e saúde.
+
+[LinkedIn](https://www.linkedin.com/in/kallebvieira) · [Instagram @kallebcode](https://www.instagram.com/kallebcode)
